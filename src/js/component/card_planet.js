@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import { Context } from "../store/appContext";
 
-const CardPlanet = props => {
+const CardPlanet = props => {  
 	const { store, actions } = useContext(Context);
 	return (
 		<div className="col-sm-3 mt-2">
