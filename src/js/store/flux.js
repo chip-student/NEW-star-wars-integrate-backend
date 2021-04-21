@@ -1,3 +1,5 @@
+import { element } from "prop-types";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -23,7 +25,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 			loadPlanets: async () => {
-				const url = "https://3000-gray-cattle-bu6ry8c3.ws-us03.gitpod.io/planets/";
+				const url = "https://3000-silver-mandrill-m4t2ud0g.ws-us03.gitpod.io/planets/";
 				const response = await fetch(url, {
 					method: "GET",
 					headers: {
@@ -32,12 +34,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 				const data = await response.json();
 
-				console.log(">>DATA PLANETS>>", data);
+				// console.log(">>DATA PLANETS>>", data);
 
 				setStore({ planets: data });
 			},
 			loadCharacters: async () => {
-				const url = "https://3000-gray-cattle-bu6ry8c3.ws-us03.gitpod.io/people/";
+				const url = "https://3000-silver-mandrill-m4t2ud0g.ws-us03.gitpod.io/people/";
 
 				const response = await fetch(url, {
 					method: "GET",
@@ -46,8 +48,57 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				});
 				const data = await response.json();
-				console.log(">>DATA PEOPLE>>", data);
+				// console.log(">>DATA PEOPLE>>", data);
 				setStore({ characters: data });
+			},
+			//[GET] /users/<int:user_id>/favoritesGet all the favorites that belong to the user with the id = user_id
+			loadUserFavoritos: async () => {
+				// const url = "https://3000-silver-mandrill-m4t2ud0g.ws-us03.gitpod.io/getuserfav/"+iduser;
+				const url = "https://3000-silver-mandrill-m4t2ud0g.ws-us03.gitpod.io/getuserfav/" + 1;
+
+				const response = await fetch(url, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json"
+					}
+				});
+				const data = await response.json();
+				// console.log(">>DATA FAVORITES USERID>>", data);
+
+				let listNames = "";
+
+				//get the store
+				const store = getStore();
+
+				let listNameFavorite = data.map(async elm => {
+					// console.log("elm.idpeople " + elm.idpeople);
+
+					if (elm.idpeople === null) {
+						listNames = store.planets.map(item => {
+							if (item.id === elm.idplanet) {
+								return item.name;
+							}
+						});
+					}
+					// console.log("elm.idplanet " + elm.idplanet);
+					if (elm.idplanet === null) {
+						listNames = store.characters.map(item => {
+							if (item.id === elm.idpeople) {
+								return item.name;
+							}
+						});
+					}
+					return listNames;
+				});
+
+				let finalData = await Promise.all(listNameFavorite);
+				// console.log("listNameFavorite <<>> " + finalData);
+
+				let res = finalData.map(item => {
+					store.favorites.push(item);
+				});
+
+				setStore({ favorites: store.favorites });
 			},
 			changeColor: (index, color) => {
 				//get the store
@@ -63,6 +114,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//reset the global store
 				setStore({ demo: demo });
 			},
+			// [POST] /users/<int:user_id>/favoritesAdd a new favorite to the user with the id = user_id.
 			addFavorites: name => {
 				//get the store
 				const store = getStore();
@@ -73,6 +125,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				// console.log(store.favorites);
 			},
+			// [DELETE] /favorite/<int:favorite_id>Delete favorite with the id = favorite_id.
 			deleteFavorites: id => {
 				// console.log(id);
 				//get the store

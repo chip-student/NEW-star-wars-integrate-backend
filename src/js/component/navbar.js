@@ -8,6 +8,7 @@ import { Context } from "../store/appContext";
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context);
+
 	return (
 		<div>
 			<nav className="navbar navbar-expand-lg navbar-light">
