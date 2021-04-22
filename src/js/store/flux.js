@@ -126,7 +126,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				});
 
-				if (!!idPeople) {
+				if (idPeople === "undefined") {
 					idPeople = null;
 				}
 				console.log("idPeople >> " + idPeople);
@@ -135,8 +135,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return item.id;
 					}
 				});
-
-				if (!!idPlanet) {
+				if (idPlanet === "undefined") {
 					idPlanet = null;
 				}
 				console.log("idPlanet >> " + idPlanet);
@@ -144,6 +143,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					idpeople: idPeople,
 					idplanet: idPlanet
 				};
+
+				console.log(data);
 
 				// se prueba con un usuario
 				let iduser = 1;
