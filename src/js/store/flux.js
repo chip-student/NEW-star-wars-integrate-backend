@@ -115,9 +115,51 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ demo: demo });
 			},
 			// [POST] /users/<int:user_id>/favoritesAdd a new favorite to the user with the id = user_id.
-			addFavorites: name => {
+			addFavorites: async name => {
 				//get the store
 				const store = getStore();
+
+				//People
+				let idPeople = store.characters.map(item => {
+					if (item.name === name) {
+						return item.id;
+					}
+				});
+
+				if (!!idPeople) {
+					idPeople = null;
+				}
+				console.log("idPeople >> " + idPeople);
+				let idPlanet = store.planets.map(item => {
+					if (item.name === name) {
+						return item.id;
+					}
+				});
+
+				if (!!idPlanet) {
+					idPlanet = null;
+				}
+				console.log("idPlanet >> " + idPlanet);
+				let data = {
+					idpeople: idPeople,
+					idplanet: idPlanet
+				};
+
+				// se prueba con un usuario
+				let iduser = 1;
+
+				const url = "https://3000-silver-mandrill-m4t2ud0g.ws-us03.gitpod.io/postuserfav/" + iduser;
+				//guarda informacion Favoritos API
+				await fetch(url, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(data)
+				})
+					.then(response => response.text())
+					.then(result => console.log(result))
+					.catch(error => console.log("error", error));
 
 				store.favorites.push(name);
 
